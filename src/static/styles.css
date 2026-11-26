@@ -121,6 +121,41 @@ section h3 {
   flex: 1;
 }
 
+.shared-activity-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: var(--info-light);
+  color: var(--info);
+  border-radius: 6px;
+}
+
+.activity-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.activity-share a {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 15px;
+  padding: 4px 8px;
+  text-decoration: none;
+}
+
+.activity-share a:hover,
+.activity-share a:focus-visible {
+  background-color: var(--primary);
+  color: var(--primary-text);
+}
+
 /* Desktop layout */
 @media (min-width: 768px) {
   .main-content-layout {
