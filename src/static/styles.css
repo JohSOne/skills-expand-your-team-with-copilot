@@ -17,6 +17,7 @@
   --surface: #ffffff;
   --text-primary: #333333;
   --text-secondary: #666666;
+  --heading-color: var(--primary);
   --border: #e0e0e0;
   --border-light: #f0f0f0;
   --border-focus: #d0d0d0;
@@ -30,6 +31,23 @@
   --error-light: #ffebee;
   --info: #0c5460;
   --info-light: #d1ecf1;
+}
+
+:root.dark-mode {
+  color-scheme: dark;
+  --background: #151820;
+  --surface: #242936;
+  --text-primary: #f0f1f5;
+  --text-secondary: #c4c9d4;
+  --heading-color: #b9c5ff;
+  --border: #50586b;
+  --border-light: #3a4150;
+  --border-focus: #7d89a3;
+}
+
+.dark-mode input {
+  background-color: var(--background);
+  color: var(--text-primary);
 }
 
 * {
@@ -91,7 +109,7 @@ section h3 {
   margin-bottom: 15px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
-  color: var(--primary);
+  color: var(--heading-color);
   font-size: 1.1rem;
 }
 
@@ -113,7 +131,7 @@ section h3 {
   margin-bottom: 15px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
-  color: var(--primary);
+  color: var(--heading-color);
   font-size: 1.1rem;
 }
 
@@ -171,7 +189,7 @@ section h3 {
 
 .activity-card h4 {
   margin-bottom: 8px;
-  color: var(--primary);
+  color: var(--heading-color);
   font-size: 1rem;
   letter-spacing: 0.3px;
   padding-bottom: 6px;
@@ -246,7 +264,7 @@ section h3 {
 }
 
 .participants-list h5 {
-  color: var(--primary);
+  color: var(--heading-color);
   margin-bottom: 5px;
   font-size: 0.8em;
 }
@@ -445,7 +463,7 @@ button {
 
 /* Login modal specific styling */
 #login-modal .modal-content h3 {
-  color: var(--primary);
+  color: var(--heading-color);
   font-size: 1.2rem;
   margin-bottom: 15px;
   text-align: center;
@@ -595,6 +613,10 @@ footer {
 
 /* Responsive adjustments for mobile */
 @media (max-width: 767px) {
+  header {
+    padding-top: 50px;
+  }
+
   .sidebar-filters {
     margin-bottom: 15px;
   }
@@ -617,6 +639,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
