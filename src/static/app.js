@@ -1,4 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const themeToggle = document.getElementById("theme-toggle");
+
+  function setTheme(dark) {
+    document.documentElement.classList.toggle("dark-mode", dark);
+    themeToggle.setAttribute("aria-pressed", String(dark));
+  }
+
+  try {
+    setTheme(localStorage.getItem("theme") === "dark");
+  } catch (error) {
+    setTheme(false);
+  }
+
+  themeToggle.addEventListener("click", () => {
+    const dark = !document.documentElement.classList.contains("dark-mode");
+    setTheme(dark);
+    try {
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    } catch (error) {
+      // The toggle still works when browser storage is unavailable.
+    }
+  });
+
   // DOM elements
   const activitiesList = document.getElementById("activities-list");
   const messageDiv = document.getElementById("message");
