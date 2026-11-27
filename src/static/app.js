@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
   const activitiesList = document.getElementById("activities-list");
+  const sharedActivityNotice = document.getElementById("shared-activity-notice");
+  const sharedActivityName = document.getElementById("shared-activity-name");
+  const showAllActivities = document.getElementById("show-all-activities");
   const messageDiv = document.getElementById("message");
   const registrationModal = document.getElementById("registration-modal");
   const modalActivityName = document.getElementById("modal-activity-name");
@@ -42,6 +45,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
+  let sharedActivity = new URLSearchParams(window.location.search).get("activity");
+
+  if (sharedActivity) {
+    sharedActivityName.textContent = sharedActivity;
+    sharedActivityNotice.classList.remove("hidden");
+  }
+
+  showAllActivities.addEventListener("click", () => {
+    sharedActivity = null;
+    sharedActivityNotice.classList.add("hidden");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("activity");
+    window.history.replaceState(null, "", url);
+    displayFilteredActivities();
+  });
 
   // Authentication state
   let currentUser = null;
@@ -420,6 +438,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let filteredActivities = {};
 
     Object.entries(allActivities).forEach(([name, details]) => {
+      if (sharedActivity && name !== sharedActivity) {
+        return;
+      }
+
       const activityType = getActivityType(name, details.description);
 
       // Apply category filter
@@ -470,7 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
       activitiesList.innerHTML = `
         <div class="no-results">
           <h4>No activities found</h4>
-          <p>Try adjusting your search or filter criteria</p>
+          <p>${
+            sharedActivity
+              ? "Try adjusting your search or filters, or show all activities."
+              : "Try adjusting your search or filter criteria."
+          }</p>
         </div>
       `;
       return;
@@ -529,6 +555,46 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    const shareUrl = new URL(window.location.pathname, window.location.origin);
+    shareUrl.searchParams.set("activity", name);
+    const shareText = `Check out ${name} at Mergington High School!`;
+    const shareLinks = [
+      {
+        label: "WhatsApp",
+        url: new URL("https://wa.me/"),
+        params: { text: `${shareText} ${shareUrl.href}` },
+      },
+      {
+        label: "Facebook",
+        url: new URL("https://www.facebook.com/sharer/sharer.php"),
+        params: { u: shareUrl.href },
+      },
+    ];
+    const shareSection = document.createElement("div");
+    shareSection.className = "activity-share";
+    shareSection.setAttribute("aria-label", `Share ${name}`);
+    const shareLabel = document.createElement("span");
+    shareLabel.textContent = "Share:";
+    shareSection.appendChild(shareLabel);
+    shareLinks.forEach(({ label, url, params }) => {
+      Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.set(key, value);
+      });
+      const link = document.createElement("a");
+      link.href = url.href;
+      link.textContent = label;
+      link.setAttribute("aria-label", `Share ${name} via ${label}`);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      shareSection.appendChild(link);
+    });
+    const emailLink = document.createElement("a");
+    emailLink.href = `mailto:?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(
+      `${shareText}\n\n${shareUrl.href}`
+    )}`;
+    emailLink.textContent = "Email";
+    emailLink.setAttribute("aria-label", `Share ${name} via Email`);
+    shareSection.appendChild(emailLink);
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${name}</h4>
@@ -581,6 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       </div>
     `;
+    activityCard.appendChild(shareSection);
 
     if (details.difficulty) {
       activityCard.querySelector(".activity-difficulty span").textContent = details.difficulty;
